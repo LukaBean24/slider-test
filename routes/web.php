@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Slider;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -16,7 +17,35 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
-    return inertia("Welcome");
+    return inertia("Welcome", [
+        'slides' => Slider::all(),
+    ]);
+});
+Route::get('/test', function () {
+    return inertia("Test");
+});
+
+Route::post('/add-slide', function () {
+    $path = request()->file('logo')->store('/logos');
+    Slider::create([
+        'title' => [
+            'text' => request('mainTitle'),
+            'color' => request('mainTitleColor'),
+            'y' => request('mainTitlePositionY'),
+            'x' => request('mainTitlePositionX'),
+            'size' => request('mainTitleSize'),
+        ],
+        'logo' => [
+            'image' => $path,
+            'x' => request('logoPositionX'),
+            'y' => request('logoPositionY'),
+            'height' => request('logoHeight'),
+            'width' => request('logoWidth'),
+        ],
+        'background' => request('backgroundColor')
+        ]);
+
+        return redirect('/');
 });
 
 

@@ -1,37 +1,23 @@
 <template>
     <div class="w-full h-[500px]">
-        <Swiper
-            navigation
-            v-bind="settings"
-            class="w-full h-full bg-purple-500"
-        >
+        <Swiper navigation v-bind="settings" class="w-full h-full">
             <SwiperSlide
-                @mousemove="getCursorPosition($event)"
-                class="w-full h-full bg-red-500 text-3xl text-white flex justify-center items-center"
-                >Slide 1
+                v-for="slide in slides"
+                :key="slide.id"
+                :style="`background-color: ${slide.background}`"
+                class="h-full flex justify-center items-center relative"
+            >
+                <img
+                    :src="`http://localhost:8000/storage/${slide.logo.image}`"
+                    alt="Logo"
+                    :style="`width: ${slide.logo.width}px; height: ${slide.logo.height}px; position: absolute; left: ${slide.logo.x}px; top: ${slide.logo.y}px;`"
+                />
                 <div
-                    v-if="positionX && positionY"
-                    class="w-4 h-4 bg-green-500 absolute rounded-lg"
-                    :style="
-                        'top:' + positionY + 'px; left: ' + positionX + 'px;'
-                    "
-                ></div>
+                    :style="`color: ${slide.title.color}; font-size: ${slide.title.size}px; position:absolute; left: ${slide.title.x}px;top: ${slide.title.y}px`"
+                >
+                    {{ slide.title.text }}
+                </div>
             </SwiperSlide>
-            <SwiperSlide
-                @mousemove="getCursorPosition($event)"
-                class="w-full h-full bg-red-500 text-3xl text-white flex justify-center items-center"
-                >Slide 2</SwiperSlide
-            >
-            <SwiperSlide
-                @mousemove="getCursorPosition($event)"
-                class="w-full h-full bg-red-500 text-3xl text-white flex justify-center items-center"
-                >Slide 3</SwiperSlide
-            >
-            <SwiperSlide
-                @mousemove="getCursorPosition($event)"
-                class="w-full h-full bg-red-500 text-3xl text-white flex justify-center items-center"
-                >Slide 4</SwiperSlide
-            >
             <div class="swiper-pagination"></div>
         </Swiper>
     </div>
@@ -40,6 +26,8 @@
 <script setup>
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Navigation, Pagination } from "swiper";
+
+const props = defineProps(["slides"]);
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -55,11 +43,5 @@ const settings = {
         clickable: true,
     },
     modules: [Navigation, Pagination],
-};
-
-const getCursorPosition = (event) => {
-    positionX.value = event.clientX;
-    positionY.value = event.clientY;
-    console.log(event.clientX + " = x || " + event.clientY + " = y");
 };
 </script>
